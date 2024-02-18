@@ -37,10 +37,9 @@ target_include_directories(${shared_lib} PUBLIC $<INSTALL_INTERFACE:include>)
 set_target_properties(${shared_lib} PROPERTIES PUBLIC_HEADER "${headers}")
 
 if(WIN32)
-  find_library(WS2_32_LIBRARY_PATH WS2_32)
   find_library(USERENV_LIBRARY_PATH UserEnv)
 
-  target_link_libraries(${shared_lib} ${WS2_32_LIBRARY_PATH} ${USERENV_LIBRARY_PATH})
+  target_link_libraries(${shared_lib} WS2_32.lib ${USERENV_LIBRARY_PATH})
   set_target_properties(${shared_lib} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
 		target_link_options(${shared_lib} PRIVATE "/MANIFEST:NO")
@@ -48,7 +47,7 @@ if(WIN32)
 		set(CMAKE_SHARED_LINKER_FLAGS "/MANIFEST:NO")
 	endif()
 
-	add_custom_command(TARGET ${shared_lib} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${static_lib}.lib" "${shared_lib}.lib")
+	add_custom_command(TARGET ${shared_lib} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${static_lib}> "$<CONFIGURATION>/${shared_lib}.lib")
 
 endif()
 
