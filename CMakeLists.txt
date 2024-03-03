@@ -32,14 +32,14 @@ set(shared_lib "${PROJECT_NAME}")
 add_library(${shared_lib} SHARED $<TARGET_OBJECTS:obj_lib>)
 add_library(${static_lib} STATIC $<TARGET_OBJECTS:obj_lib>)
 
-target_include_directories(${shared_lib} PUBLIC $<INSTALL_INTERFACE:include>)
+target_include_directories(PVL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(sllPVL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 set_target_properties(${shared_lib} PROPERTIES PUBLIC_HEADER "${headers}")
+set_target_properties(${static_lib} PROPERTIES PUBLIC_HEADER "${headers}")
 
 if(WIN32)
-  find_library(USERENV_LIBRARY_PATH UserEnv)
-
-  target_link_libraries(${shared_lib} WS2_32.lib ${USERENV_LIBRARY_PATH})
+  target_link_libraries(${shared_lib} WS2_32.lib UserEnv.lib)
   set_target_properties(${shared_lib} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 	if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
 		target_link_options(${shared_lib} PRIVATE "/MANIFEST:NO")
@@ -68,7 +68,7 @@ install(TARGETS ${shared_lib} ${static_lib} EXPORT PIRL-config
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/PIRL
 )
 
 install(EXPORT PIRL-config NAMESPACE PIRL:: DESTINATION ${CMAKE_INSTALL_DATADIR}/PIRL/cmake)
