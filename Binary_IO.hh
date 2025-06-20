@@ -490,7 +490,7 @@ explicit Binary_Input (std::istream& stream, Data_Order data_order)
 template<typename T>
 Binary_Input& get (T& value)
 {
-Binary_IO::read (Stream, reinterpret_cast<char*>(&value), sizeof (T));
+(*Binary_IO::read) (Stream, reinterpret_cast<char*>(&value), sizeof (T));
 return *this;
 }
 
@@ -534,7 +534,7 @@ explicit Binary_Output (std::ostream& stream, Data_Order data_order)
 template<typename T>
 Binary_Output& put (T& value)
 {
-Binary_IO::write (Stream, reinterpret_cast<const char*>(&value), sizeof (T));
+(*Binary_IO::write) (Stream, reinterpret_cast<const char*>(&value), sizeof (T));
 return *this;
 }
 
